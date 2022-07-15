@@ -11,7 +11,6 @@ namespace FINN.CONSOLE
 	{
 		static void Main(string[] args)
 		{
-			CADHelper.Place();
 		}
 	}
 }

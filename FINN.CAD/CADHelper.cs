@@ -1,57 +1,71 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows;
+using System.Runtime.InteropServices;
+
+using Autodesk.AutoCAD.Interop;
 using Autodesk.AutoCAD.Runtime;
 using Autodesk.AutoCAD.ApplicationServices;
+using System.Windows.Forms;
 using Autodesk.AutoCAD.DatabaseServices;
 
 namespace FINN.CAD
 {
-	public class CADHelper
+    public class CADHelper
 	{
-		public static void Place()
-		{
-			Document acDoc = Autodesk.AutoCAD.ApplicationServices.Core.Application.DocumentManager.MdiActiveDocument;
-			Database acCurDb = acDoc.Database;
+        private static AcadApplication GetInstance()
+        {
+            AcadApplication acAppComObj = null;
+            const string strProgId = "AutoCAD.Application";
 
-			// Starts a new transaction with the Transaction Manager
-			using (Transaction acTrans = acCurDb.TransactionManager.StartTransaction())
-			{
-				// Open the Block table record for read
-				BlockTable acBlkTbl;
-				acBlkTbl = acTrans.GetObject(acCurDb.BlockTableId,
-											 OpenMode.ForRead) as BlockTable;
+            // Get a running instance of AutoCAD
+            try
+            {
+                acAppComObj = (AcadApplication)Marshal.GetActiveObject(strProgId);
+            }
+            catch // An error occurs if no instance is running
+            {
+                try
+                {
+                    // Create a new instance of AutoCAD
+                    acAppComObj = (AcadApplication)Activator.CreateInstance(Type.GetTypeFromProgID(strProgId), true);
+                }
+                catch
+                {
+                    // If an instance of AutoCAD is not created then message and exit
+                    MessageBox.Show("Instance of 'AutoCAD.Application'" +
+                                                         " could not be created.");
 
-				// Open the Block table record Model space for write
-				BlockTableRecord acBlkTblRec;
-				acBlkTblRec = acTrans.GetObject(acBlkTbl[BlockTableRecord.ModelSpace],
-												OpenMode.ForWrite) as BlockTableRecord;
+                    throw new InstanceNotCreatedException();
+                }
+            }
 
-				/* Creates a new MText object and assigns it a location,
-                text value and text style */
-				using (MText objText = new MText())
-				{
-					// Specify the insertion point of the MText object
-					objText.Location = new Autodesk.AutoCAD.Geometry.Point3d(2, 2, 0);
+            return acAppComObj;
+        }
 
-					// Set the text string for the MText object
-					objText.Contents = "Greetings, Welcome to AutoCAD .NET";
+        public static void LoadInProcessAssembly(string path)
+        {
+            var acAppComObj = GetInstance();
+            // Optionally, load your assembly and start your command or if your assembly
+            // is demandloaded, simply start the command of your in-process assembly.
+            var acDocComObj = acAppComObj.ActiveDocument;
+            
+            acDocComObj.SendCommand($"(command \"NETLOAD\" \"{path}\")");
+        }
 
-					// Set the text style for the MText object
-					objText.TextStyleId = acCurDb.Textstyle;
+        public static string GetVersion()
+        {
+            var intance = CADHelper.GetInstance();
+            MessageBox.Show("Now running " + intance.Name +
+                                     " version " + intance.Version);
+            return intance.Version;
+        }
 
-					// Appends the new MText object to model space
-					acBlkTblRec.AppendEntity(objText);
+        public static void Execute()
+        {
+            var acAppComObj = CADHelper.GetInstance();
+            var acDocComObj = acAppComObj.ActiveDocument;
 
-					// Appends to new MText object to the active transaction
-					acTrans.AddNewlyCreatedDBObject(objText, true);
-				}
-
-				// Saves the changes to the database and closes the transaction
-				acTrans.Commit();
-			}
-		}
+            acDocComObj.SendCommand("MyCommand ");
+        }
 	}
 }
