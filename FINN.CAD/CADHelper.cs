@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Windows;
+using System.Windows.Forms;
 using System.Runtime.InteropServices;
 
 using Autodesk.AutoCAD.Interop;
-using Autodesk.AutoCAD.Runtime;
-using Autodesk.AutoCAD.ApplicationServices;
-using System.Windows.Forms;
-using Autodesk.AutoCAD.DatabaseServices;
 
 namespace FINN.CAD
 {
     public class CADHelper
-	{
+    {
         private static AcadApplication GetInstance()
         {
             AcadApplication acAppComObj = null;
@@ -46,26 +42,25 @@ namespace FINN.CAD
         {
             var acAppComObj = GetInstance();
             // Optionally, load your assembly and start your command or if your assembly
-            // is demandloaded, simply start the command of your in-process assembly.
+            // is demand loaded, simply start the command of your in-process assembly.
             var acDocComObj = acAppComObj.ActiveDocument;
-            
+
             acDocComObj.SendCommand($"(command \"NETLOAD\" \"{path}\")");
         }
 
         public static string GetVersion()
         {
-            var intance = CADHelper.GetInstance();
-            MessageBox.Show("Now running " + intance.Name +
-                                     " version " + intance.Version);
-            return intance.Version;
+            var instance = GetInstance();
+            MessageBox.Show("Now running " + instance.Name + " version " + instance.Version);
+            return instance.Version;
         }
 
-        public static void Execute()
+        public static void Execute(string command)
         {
-            var acAppComObj = CADHelper.GetInstance();
+            var acAppComObj = GetInstance();
             var acDocComObj = acAppComObj.ActiveDocument;
 
-            acDocComObj.SendCommand("MyCommand ");
+            acDocComObj.SendCommand(command);
         }
-	}
+    }
 }
