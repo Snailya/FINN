@@ -237,7 +237,7 @@
     <ManifestKeyFile>FINN_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>4FB2947C1D0E4984BAE973394808EFC46D0C6B04</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>05D9D6A3E59E53BE9DA4795DFFE5712101E287CF</ManifestCertificateThumbprint>
   </PropertyGroup>
   <!-- Include the build rules for a C# project. -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
