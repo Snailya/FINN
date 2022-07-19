@@ -6,8 +6,8 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.EditorInput;
 
-[assembly: CommandClass(typeof(FINN.CAD.ProcessNodeCommand))]
-namespace FINN.CAD
+[assembly: CommandClass(typeof(FINN.CAD.Commands.ProcessNodeCommand))]
+namespace FINN.CAD.Commands
 {
     public class ProcessNodeCommand
     {
@@ -29,9 +29,10 @@ namespace FINN.CAD
         }
 
         /// <summary>
-        /// Create a legacy block using specified data. If data is not declared before, a user prompt will prompt to let user give the information.
+        /// Create a legacy block using specified data. 
+        /// If data is not declared before, a user prompt will prompt to let user give the information.
         /// </summary>
-        [CommandMethod("createlegacy")]
+        [CommandMethod("FINN","crtlgc", CommandFlags.Modal)]
         public void CreateLegacy()
         {
             var acDoc = Autodesk.AutoCAD.ApplicationServices.Core.Application.DocumentManager.MdiActiveDocument;

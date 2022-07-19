@@ -65,9 +65,11 @@
   <ItemGroup>
     <Compile Include="CADHelper.cs" />
     <Compile Include="Commands\ProcessNodeCommands.cs" />
+    <Compile Include="Commands\ProcessNodeGroupCommand.cs" />
     <Compile Include="Exceptions\InstanceNotCreatedException.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Models\ProcessNode.cs" />
+    <Compile Include="Models\ProcessNodeGroup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
