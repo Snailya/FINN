@@ -14,27 +14,23 @@ namespace FINN.CAD.Commands
 
 		public static ProcessNodeGroup Data { get; set; }
 
-		/// <summary>
-		/// Group specificied entityes inside a rectangle. 
-		/// If data is not declared before, a user prompt will prompt to let user give the information.
-		/// </summary>
-		[CommandMethod("FINN", "grp", CommandFlags.Modal)]
-		public void GroupNodes()
+		private static ProcessNodeGroup PromptInput()
 		{
 			var acDoc = Autodesk.AutoCAD.ApplicationServices.Core.Application.DocumentManager.MdiActiveDocument;
 
-			if (Data == null)
-			{
-				var opt1 = new PromptStringOptions("Please enter group name...");
-				var r1 = acDoc.Editor.GetString(opt1);
+			var opt1 = new PromptStringOptions("Please enter group name...");
+			var r1 = acDoc.Editor.GetString(opt1);
 
-				var opt2 = new PromptSelectionOptions();
-				var r2 = acDoc.Editor.GetSelection(opt2);
-				if (r2.Status != PromptStatus.OK) return;
+			var opt2 = new PromptSelectionOptions();
+			var r2 = acDoc.Editor.GetSelection(opt2);
+			if (r2.Status != PromptStatus.OK) return null;
 
-				Data = new ProcessNodeGroup() { Name = r1.StringResult, Items = r2.Value.GetObjectIds() };
-			}
+			return new ProcessNodeGroup() { Name = r1.StringResult, Items = r2.Value.GetObjectIds() };
+		}
 
+		public static void InnerExecute()
+		{
+			var acDoc = Autodesk.AutoCAD.ApplicationServices.Core.Application.DocumentManager.MdiActiveDocument;
 			var acDatabase = acDoc.Database;
 
 			using (var acTrans = acDatabase.TransactionManager.StartTransaction())
@@ -60,6 +56,20 @@ namespace FINN.CAD.Commands
 
 				acTrans.Commit();
 			}
+		}
+
+		/// <summary>
+		/// Group specificied entityes inside a rectangle. 
+		/// If data is not declared before, a user prompt will prompt to let user give the information.
+		/// </summary>
+		[CommandMethod("FINN", "grp", CommandFlags.Modal)]
+		public void Execute()
+		{
+			// prompt user input if Sample is null
+			Data = Data ?? PromptInput();
+			if (Data == null) return;
+
+			InnerExecute();
 
 			Data = null;
 		}

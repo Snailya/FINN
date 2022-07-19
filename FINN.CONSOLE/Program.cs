@@ -11,6 +11,8 @@ namespace FINN.CONSOLE
 	{
 		static void Main(string[] args)
 		{
+			CADHelper.LoadInProcessAssembly(@"C:\\Users\\snailya\\source\\repos\\FINN\\FINN.CAD\\bin\\Debug\\FINN.CAD.dll");
+			CADHelper.Execute("crtlgc");
 		}
 	}
 }
