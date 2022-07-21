@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace FINN.CAD
+namespace FINN.CAD.Exceptions
 {
     [Serializable]
     internal class InstanceNotCreatedException : System.Exception
@@ -14,7 +14,8 @@ namespace FINN.CAD
         {
         }
 
-        public InstanceNotCreatedException(string message, System.Exception innerException) : base(message, innerException)
+        public InstanceNotCreatedException(string message, System.Exception innerException) : base(message,
+            innerException)
         {
         }
 
